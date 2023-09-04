@@ -73,6 +73,7 @@ class Record:
         else:
             return "Birthday not specified"
 
+
     def __str__(self) -> str:
         return f"{self.name}: {', '.join(str(p) for p in self.phones)}"
 
@@ -107,12 +108,16 @@ def main():
                 print("Please provide name and phone number.")
                 continue
             name, phone = args[0], args[1]
+            birthday = None 
+            if len(args) >= 3:
+                birthday = Birthday(args[2])
+
             if name in address_book:
                 print(f"Contact {name} already exists.")
             else:
-                record = Record(Name(name), Phone(phone))
+                record = Record(Name(name), Phone(phone), birthday)  # Передача дня народження
                 address_book.add_record(record)
-                print(f"Contact {name} added with phone {phone}.")
+                print(f"Contact {name} added with phone {phone} and birthday {args[2] if birthday else 'not specified'}.")
         elif command == "change":
             if len(args) < 2:
                 print("Please provide name and phone number.")
@@ -144,9 +149,18 @@ def main():
                         print(f"{name}: {record.phones[0].value}")
             else:
                 print("Unknown command")
+        elif command == "days_to_birthday":  
+            if not args:
+                print("Please provide a name.")
+                continue
+            name = args[0]
+            if name not in address_book:
+                print(f"Contact {name} not found.")
+            else:
+                record = address_book[name]
+                print(record.days_to_birthday())
         else:
             print("Unknown command")
-
 
 if __name__ == "__main__":
     main()
